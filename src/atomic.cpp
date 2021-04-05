@@ -25,7 +25,7 @@ extern "C" inline void __atomic_store_8(volatile void* ptr, uint64_t value,
   asm volatile("cpsie i");
 }
 
-extern "C" inline void __atomic_store_4(volatile void* ptr, uint32_t value,
+extern "C" inline void __atomic_store_4(volatile void* ptr, unsigned int value,
                                         int order) {
   atomic_store(ptr, value, static_cast<std::memory_order>(order));
 }
@@ -66,7 +66,7 @@ extern "C" uint64_t __atomic_load_8(const volatile void* ptr, int order) {
   return value;
 }
 
-extern "C" uint32_t __atomic_load_4(const volatile void* ptr, int order) {
+extern "C" unsigned int __atomic_load_4(const volatile void* ptr, int order) {
   return atomic_load<uint32_t>(ptr, static_cast<std::memory_order>(order));
 }
 

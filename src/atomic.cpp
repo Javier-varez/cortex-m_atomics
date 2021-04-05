@@ -76,3 +76,40 @@ extern "C" uint16_t __atomic_load_2(const volatile void* ptr, int order) {
 extern "C" uint8_t __atomic_load_1(const volatile void* ptr, int order) {
   return atomic_load<uint8_t>(ptr, static_cast<std::memory_order>(order));
 }
+
+template <class T>
+T atomic_exchange(volatile void* ptr, T value, std::memory_order order) {
+  asm volatile("cpsid i");
+  if (order != std::memory_order_relaxed) {
+    asm volatile("dmb");
+  }
+  auto& atomic = *reinterpret_cast<volatile T*>(ptr);
+  const auto prev_val = atomic;
+  atomic = value;
+  if (order != std::memory_order_relaxed) {
+    asm volatile("dmb");
+  }
+  asm volatile("cpsie i");
+  return prev_val;
+}
+
+extern "C" uint64_t __atomic_exchange_8(volatile void* ptr, uint64_t value,
+                                        int order) {
+  return atomic_exchange(ptr, value, static_cast<std::memory_order>(order));
+}
+
+extern "C" unsigned int __atomic_exchange_4(volatile void* ptr,
+                                            unsigned int value, int order) {
+  return atomic_exchange(ptr, value, static_cast<std::memory_order>(order));
+}
+
+extern "C" uint16_t __atomic_exchange_2(volatile void* ptr, uint16_t value,
+                                        int order) {
+  return atomic_exchange(ptr, value, static_cast<std::memory_order>(order));
+}
+
+extern "C" uint8_t __atomic_exchange_1(volatile void* ptr, uint8_t value,
+                                       int order) {
+  return atomic_exchange(ptr, value, static_cast<std::memory_order>(order));
+}
+

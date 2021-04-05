@@ -18,25 +18,24 @@ inline void atomic_store(volatile void* ptr, T value, std::memory_order order) {
   }
 }
 
-extern "C" inline void __atomic_store_8(volatile void* ptr, uint64_t value,
-                                        int order) {
+extern "C" void __atomic_store_8(volatile void* ptr, uint64_t value,
+                                 int order) {
   asm volatile("cpsid i");
   atomic_store(ptr, value, static_cast<std::memory_order>(order));
   asm volatile("cpsie i");
 }
 
-extern "C" inline void __atomic_store_4(volatile void* ptr, unsigned int value,
-                                        int order) {
+extern "C" void __atomic_store_4(volatile void* ptr, unsigned int value,
+                                 int order) {
   atomic_store(ptr, value, static_cast<std::memory_order>(order));
 }
 
-extern "C" inline void __atomic_store_2(volatile void* ptr, uint16_t value,
-                                        int order) {
+extern "C" void __atomic_store_2(volatile void* ptr, uint16_t value,
+                                 int order) {
   atomic_store(ptr, value, static_cast<std::memory_order>(order));
 }
 
-extern "C" inline void __atomic_store_1(volatile void* ptr, uint8_t value,
-                                        int order) {
+extern "C" void __atomic_store_1(volatile void* ptr, uint8_t value, int order) {
   atomic_store(ptr, value, static_cast<std::memory_order>(order));
 }
 

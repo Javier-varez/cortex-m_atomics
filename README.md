@@ -6,4 +6,7 @@ Using this library with multi-core systems will **not** ensure operations are se
 
 This library does not provide any headers, since builds on top of the standard `atomic` and `stdatomic.h` headers by implementing compiler intrinsics for `Clang` and `GCC`. The only requirement is to link against it.
 
-Can be used with both arm-none-eabi-gcc and clang-10 or newer.
+Can be used with both `gcc` and `clang` or newer. Some documentation can be found [here](https://llvm.org/docs/Atomics.html#id17) and [here](https://gcc.gnu.org/wiki/Atomic/GCCMM/LIbrary)
+
+This library is not currently complete. Implementations or atomic funtsions will be implemented on a case by case basis.
+

@@ -8,8 +8,12 @@ add_library(cortex-m_atomics STATIC
 target_compile_options(cortex-m_atomics
   PRIVATE
     -Wall
-    -Wextra
-    -std=c++20)
+    -Wextra)
+
+target_compile_features(cortex-m_atomics
+  PRIVATE
+    cxx_std_20)
+
 target_compile_definitions(cortex-m_atomics
   PRIVATE
     -D__LIBATOMIC_SUPPORTS_I1

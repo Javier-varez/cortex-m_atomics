@@ -1,8 +1,7 @@
-
 /**
  * MIT License
  *
- * Copyright (c) 2021 Francisco Javier Alvarez Garcia
+ * Copyright (c) 2023 Francisco Javier Alvarez Garcia
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -210,4 +209,44 @@ extern "C" uint16_t __atomic_exchange_2(volatile void* ptr, uint16_t value,
 extern "C" uint8_t __atomic_exchange_1(volatile void* ptr, uint8_t value,
                                        int order) {
   return atomic_exchange(ptr, value, static_cast<std::memory_order>(order));
+}
+
+template <class T>
+T atomic_fetch_add(volatile void* ptr, const T value, std::memory_order order) {
+  return critical_section([&]() {
+    if (order != std::memory_order_relaxed) {
+      // this is a bit more pessimistic than needed, but shall do
+      memory_barrier();
+    }
+    volatile T& atomic = *reinterpret_cast<volatile T*>(ptr);
+    const auto prev_value = atomic;
+    atomic = prev_value + value;
+    if (order != std::memory_order_relaxed) {
+      // this is a bit more pessimistic than needed, but shall do
+      memory_barrier();
+    }
+    return prev_value;
+  });
+}
+
+extern "C" uint64_t __atomic_fetch_add_8(volatile void* ptr,
+                                         const uint64_t value,
+                                         const int order) {
+  return atomic_fetch_add(ptr, value, static_cast<std::memory_order>(order));
+}
+
+extern "C" unsigned int __atomic_fetch_add_4(volatile void* ptr,
+                                             const unsigned int value,
+                                             int order) {
+  return atomic_fetch_add(ptr, value, static_cast<std::memory_order>(order));
+}
+
+extern "C" uint16_t __atomic_fetch_add_2(volatile void* ptr, uint16_t value,
+                                         int order) {
+  return atomic_fetch_add(ptr, value, static_cast<std::memory_order>(order));
+}
+
+extern "C" uint8_t __atomic_fetch_add_1(volatile void* ptr, uint8_t value,
+                                        int order) {
+  return atomic_fetch_add(ptr, value, static_cast<std::memory_order>(order));
 }
